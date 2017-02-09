@@ -1,22 +1,13 @@
 package main
 
-import (
-	"log"
+import "github.com/gopherjs/gopherjs/js"
 
-	"github.com/gopherjs/gopherjs/js"
-)
+const Message = "Hello world!"
 
-type Request struct{}
-
-type Response struct{}
-
-func (res Response) send(data []byte) {}
-
-func HelloWorld(req Request, res Response) {
-	log.Println(req, res)
-	res.send([]byte("Hello world!"))
+func HelloWorld(req *js.Object, res *js.Object) {
+	res.Call("send", Message)
 }
 
 func main() {
-	js.Module.Get("exports").Set("helloyolo", HelloWorld)
+	js.Module.Get("exports").Set("helloGO", HelloWorld)
 }
