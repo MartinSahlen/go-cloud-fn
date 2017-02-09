@@ -1,0 +1,5 @@
+package: github.com/MartinSahlen/go-cloud-fn
+import:
+- package: github.com/gopherjs/gopherjs
+  subpackages:
+  - js
