@@ -1,19 +1,22 @@
-package pet
+package main
 
-import "github.com/gopherjs/gopherjs/js"
+import (
+	"log"
 
-type Pet struct {
-	name string
+	"github.com/gopherjs/gopherjs/js"
+)
+
+type Request struct{}
+
+type Response struct{}
+
+func (res Response) send(data []byte) {}
+
+func HelloWorld(req Request, res Response) {
+	log.Println(req, res)
+	res.send([]byte("Hello world!"))
 }
 
-func (p *Pet) Name() string {
-	return p.name
-}
-
-func (p *Pet) SetName(newName string) {
-	p.name = newName
-}
-
-func New(name string) *js.Object {
-	return js.MakeWrapper(&Pet{name})
+func main() {
+	js.Module.Get("exports").Set("helloyolo", HelloWorld)
 }
