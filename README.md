@@ -8,7 +8,7 @@ Currently, this only implements a http function (which essentially are express h
 project is really to show that a pretty simple setup like this (very little dependencies and config required) enables
 you to write code for cloud functions using Go <3!
 
-Run `gopherjs build index.go` to compile the project.
+Run `npm run build` to compile the project.
 
 then, you will run:
 

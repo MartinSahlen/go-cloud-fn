@@ -7,10 +7,12 @@ import (
 	"math/rand"
 	"net/http"
 
+	"github.com/docker/docker/pkg/namesgenerator"
 	"github.com/gopherjs/gopherjs/js"
 )
 
 type Result struct {
+	Name    string `json:"name"`
 	Message string `json:"message"`
 	Id      int    `json:"id"`
 }
@@ -37,8 +39,8 @@ func HelloWorld(req, res *js.Object) {
 			log.Println(err)
 			return
 		}
-
-		r := Result{string(body), rand.Int()}
+		name := namesgenerator.GetRandomName(5)
+		r := Result{name, string(body), rand.Int()}
 		res.Call("set", "Content-Type", "application/json")
 		res.Call("send", string(r.JSON()))
 	}()
