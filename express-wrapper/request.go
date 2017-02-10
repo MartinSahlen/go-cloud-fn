@@ -39,7 +39,7 @@ func NewRequest(req *js.Object) Request {
 	cookies, err := convertToMapOfStringSlices(req.Get("cookies").Interface())
 
 	if err != nil {
-		log.Println("query: " + err.Error())
+		log.Println("cookies: " + err.Error())
 	}
 
 	body, err := convertToBytes(req.Get("body").Interface())

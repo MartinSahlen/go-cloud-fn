@@ -7,8 +7,8 @@ import (
 	express "github.com/MartinSahlen/go-cloud-fn/express-wrapper"
 )
 
-/// Handle is just like "net/http" Handlers, only takes params.
-type Handle func(express.Response, express.Request, url.Values)
+//Handle is just like "net/http" Handlers, only takes params.
+type Handle func(express.Response, express.Request)
 
 // Router name says it all.
 type Router struct {
@@ -19,8 +19,8 @@ type Router struct {
 // New creates a new router. It takes the root (fall through) route
 // like how the default mux works. The only difference, you get to specify one.
 func New(rootHandler Handle) *Router {
-	node := node{component: "/", isNamedParam: false, methods: make(map[string]Handle)}
-	return &Router{tree: &node, rootHandler: rootHandler}
+	n := node{component: "/", isNamedParam: false, methods: make(map[string]Handle)}
+	return &Router{tree: &n, rootHandler: rootHandler}
 }
 
 // Handle takes an http handler, method, and pattern for a route.
@@ -81,20 +81,20 @@ func (n *node) traverse(components []string, params url.Values) (*node, string) 
 				next := components[1:]
 				if len(next) > 0 { // http://xkcd.com/1270/
 					return child.traverse(next, params) // tail recursion is it's own reward.
-				} else {
-					return child, component
 				}
+				return child, component
 			}
 		}
 	}
 	return n, component
 }
 
+//Serve Starts the routing traversal process
 func (r Router) Serve(response express.Response, request express.Request) {
 	node, _ := r.tree.traverse(strings.Split(request.Path, "/")[1:], request.Params)
 	if handler := node.methods[request.Method]; handler != nil {
-		handler(response, request, request.Params)
+		handler(response, request)
 	} else {
-		r.rootHandler(response, request, request.Params)
+		r.rootHandler(response, request)
 	}
 }
