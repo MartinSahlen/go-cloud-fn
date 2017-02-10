@@ -18,6 +18,6 @@ Object.keys(handlers).forEach(function(key) {
   console.log("Added handler function for " + key);
 });
 
-var port = 8080
+var port = 3000
 console.log("Listening on 0.0.0.0:" + port);
 app.listen(port)

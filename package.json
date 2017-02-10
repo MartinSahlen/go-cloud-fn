@@ -22,6 +22,7 @@
     "body-parser": "^1.16.0",
     "concurrently": "^3.2.0",
     "express": "^4.14.1",
+    "nodemon": "^1.11.0",
     "webpack": "^2.2.1",
     "xhr2": "^0.1.4"
   }
