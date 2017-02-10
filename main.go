@@ -22,13 +22,11 @@ func HelloHandler(res express.Response, req express.Request, params url.Values) 
 
 //Handle is the main handler and entrypoint for the google cloud function
 func EntryPoint(req, res *js.Object) {
-	request := express.NewRequest(req)
-	response := express.NewResponse(res)
-	r := router.New(RootHandler)
 
+	r := router.New(RootHandler)
 	r.Handle("GET", "/hello/:ergegr", HelloHandler)
 
-	r.Serve(response, request)
+	r.Serve(express.NewResponse(res), express.NewRequest(req))
 }
 
 func main() {
