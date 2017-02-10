@@ -2,7 +2,6 @@ package express
 
 import (
 	"encoding/json"
-	"errors"
 	"log"
 
 	"github.com/gopherjs/gopherjs/js"
@@ -19,81 +18,11 @@ type Request struct {
 	Headers     map[string]string   `json:"headers,omitempty"`
 	Query       map[string][]string `json:"query,omitempty"`
 	Cookies     map[string][]string `json:"cookies,omitempty"`
-}
-
-func convertToMapOfStringSlices(i interface{}) (m map[string][]string, err error) {
-
-	m = make(map[string][]string)
-
-	if i == nil {
-		err = errors.New("Got nil trying to convert interface to map of string slices")
-		return
-	}
-
-	tempMap, isMap := i.(map[string]interface{})
-
-	if isMap {
-
-		for k, v := range tempMap {
-
-			s, isString := v.(string)
-			if isString {
-				m[k] = []string{s}
-				break
-			}
-
-			si, isSlice := v.([]interface{})
-
-			if isSlice {
-
-				sss, serr := convertToStringSlice(si)
-				if serr == nil {
-					m[k] = sss
-				}
-			}
-		}
-	} else {
-		err = errors.New("Not a valid map")
-	}
-	return
-}
-
-func convertToStringSlice(i interface{}) (ss []string, err error) {
-
-	ss = []string{}
-
-	if i == nil {
-		err = errors.New("Got nil trying to convert interface to string slice")
-		return
-	}
-
-	si, isSlice := i.([]interface{})
-
-	if isSlice {
-		for _, v := range si {
-			s, isString := v.(string)
-			if isString {
-				ss = append(ss, s)
-			}
-		}
-	} else {
-		err = errors.New("Not a valid slice")
-	}
-	return
-}
-
-func convertToBytes(i interface{}) (b []byte, err error) {
-	if i == nil {
-		err = errors.New("Got nil trying to convert interface to bytes")
-		return
-	}
-
-	b, err = json.Marshal(i)
-	return
+	Raw         *js.Object          `json:"cookies,omit"`
 }
 
 //ParseRequest wraps a (express request) javascript object into what we need
-func ParseRequest(req *js.Object) Request {
+func NewRequest(req *js.Object) Request {
 	params, err := convertToMapOfStringSlices(req.Get("params").Interface())
 
 	if err != nil {
@@ -131,22 +60,22 @@ func ParseRequest(req *js.Object) Request {
 	return Request{
 		Path:        req.Get("path").String(),
 		IPAddress:   req.Get("ip").String(),
-		Host:        req.Get("host").String(),
+		Host:        req.Get("hostname").String(),
 		IPAddresses: ips,
 		Headers:     headers,
 		Params:      params,
 		Body:        body,
 		Query:       query,
 		Cookies:     cookies,
+		Raw:         req,
 	}
 }
 
 //JSON is returns a STRING; not bytes
-func (r Request) JSON() string {
+func (r Request) JSON() []byte {
 	byt, err := json.Marshal(r)
 	if err != nil {
 		panic(err)
-	} else {
-		return string(byt)
 	}
+	return byt
 }
