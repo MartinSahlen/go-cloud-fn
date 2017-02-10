@@ -11,6 +11,7 @@ import (
 type Request struct {
 	Body        []byte              `json:"body,omitempty"`
 	Path        string              `json:"path,omitempty"`
+	Method      string              `json:"method,omitempty"`
 	Host        string              `json:"host,omitempty"`
 	IPAddresses []string            `json:"ips,omitempty"`
 	IPAddress   string              `json:"ip,omitempty"`
@@ -61,6 +62,7 @@ func NewRequest(req *js.Object) Request {
 		Path:        req.Get("path").String(),
 		IPAddress:   req.Get("ip").String(),
 		Host:        req.Get("hostname").String(),
+		Method:      req.Get("method").String(),
 		IPAddresses: ips,
 		Headers:     headers,
 		Params:      params,
