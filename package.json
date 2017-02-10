@@ -1,0 +1,23 @@
+{
+  "name": "go-cloud-fn",
+  "version": "1.0.0",
+  "description": "A Go thing designed to test Google cloud functions https://cloud.google.com/functions/docs/quickstart.",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack --config polyfill/webpack.config.js && gopherjs build main.go polyfill/polyfill.inc.js -o index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MartinSahlen/go-cloud-fn.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MartinSahlen/go-cloud-fn/issues"
+  },
+  "homepage": "https://github.com/MartinSahlen/go-cloud-fn#readme",
+  "dependencies": {
+    "webpack": "^2.2.1",
+    "xhr2": "^0.1.4"
+  }
+}
