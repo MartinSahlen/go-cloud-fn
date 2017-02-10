@@ -4,8 +4,9 @@
   "description": "A Go thing designed to test Google cloud functions https://cloud.google.com/functions/docs/quickstart.",
   "main": "index.js",
   "scripts": {
-    "build": "webpack --config node-compat/webpack.config.js && gopherjs build main.go node-compat/polyfill.inc.js -o index.js",
-    "dev": "test -f index.js || npm run build; node node-compat/server"
+    "build": "webpack --config node-compat/webpack.config.js && gopherjs build main.go node-compat/polyfill.inc.js -m -o index.js",
+    "dev": "test -f index.js || npm run build; nodemon node-compat/server",
+    "live": "concurrently \"gopherjs build main.go node-compat/polyfill.inc.js -m -w -o index.js\" \"nodemon node-compat/server\""
   },
   "repository": {
     "type": "git",
@@ -19,6 +20,7 @@
   "homepage": "https://github.com/MartinSahlen/go-cloud-fn#readme",
   "devDependencies": {
     "body-parser": "^1.16.0",
+    "concurrently": "^3.2.0",
     "express": "^4.14.1",
     "webpack": "^2.2.1",
     "xhr2": "^0.1.4"

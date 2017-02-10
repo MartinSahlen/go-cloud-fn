@@ -28,7 +28,7 @@ func (r Result) JSON() []byte {
 func HelloWorld(req, res *js.Object) {
 
 	go func() {
-		resp, err := http.Get("https://google.com/")
+		resp, err := http.Get("https://google.no/")
 		if err != nil {
 			log.Println(err)
 			return
