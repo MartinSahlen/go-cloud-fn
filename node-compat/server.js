@@ -1,12 +1,12 @@
 var bodyParser = require('body-parser')
 var express = require('express')
-var handlers = require('./index')
+var handlers = require('../index')
 
 var app = express()
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
-app.use('*', function(req, res, next){
+app.use(function(req, res, next){
   console.log(Date() + " " + req.method.toUpperCase() + " " + req.path + " ");
   next();
 });

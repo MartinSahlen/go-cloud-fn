@@ -4,8 +4,8 @@
   "description": "A Go thing designed to test Google cloud functions https://cloud.google.com/functions/docs/quickstart.",
   "main": "index.js",
   "scripts": {
-    "build": "webpack --config polyfill/webpack.config.js && gopherjs build main.go polyfill/polyfill.inc.js -o index.js",
-    "dev": "node server"
+    "build": "webpack --config node-compat/webpack.config.js && gopherjs build main.go node-compat/polyfill.inc.js -o index.js",
+    "dev": "test -f index.js || npm run build; node node-compat/server"
   },
   "repository": {
     "type": "git",

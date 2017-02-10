@@ -47,7 +47,5 @@ func HelloWorld(req, res *js.Object) {
 }
 
 func main() {
-	//js.Global.Get("require").Invoke("es6-promise").Call("polyfill")
-	//js.Global.Get("require").Invoke("isomorphic-fetch")
 	js.Module.Get("exports").Set("helloGO", HelloWorld)
 }

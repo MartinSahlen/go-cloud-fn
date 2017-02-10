@@ -1,7 +1,7 @@
 var path = require('path');
 
 module.exports = {
-  entry: './polyfill/polyfill.js',
+  entry: './node-compat/polyfill.js',
   target: 'node',
   output: {
     path: path.join(__dirname),
