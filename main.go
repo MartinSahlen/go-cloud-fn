@@ -1,19 +1,36 @@
 package main
 
 import (
+	"net/url"
+
 	"github.com/MartinSahlen/go-cloud-fn/express-wrapper"
+	"github.com/MartinSahlen/go-cloud-fn/router"
 	"github.com/gopherjs/gopherjs/js"
 )
 
+func RootHandler(res express.Response, req express.Request, params url.Values) {
+	res.Headers.Write("content-type", "application/json")
+	res.Status = 404
+	res.Write(req.JSON())
+}
+
+func HelloHandler(res express.Response, req express.Request, params url.Values) {
+	res.Headers.Write("content-type", "application/json")
+	res.Status = 200
+	res.Write(req.JSON())
+}
+
 //Handle is the main handler and entrypoint for the google cloud function
-func RootHandler(req, res *js.Object) {
+func EntryPoint(req, res *js.Object) {
 	request := express.NewRequest(req)
 	response := express.NewResponse(res)
-	response.Headers.Write("content-type", "application/json")
-	response.Status = 201
-	response.Write(request.JSON())
+	r := router.New(RootHandler)
+
+	r.Handle("GET", "/hello/:ergegr", HelloHandler)
+
+	r.Serve(response, request)
 }
 
 func main() {
-	js.Module.Get("exports").Set("helloGO", RootHandler)
+	js.Module.Get("exports").Set("helloGO", EntryPoint)
 }
