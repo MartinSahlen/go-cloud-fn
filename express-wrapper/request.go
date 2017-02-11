@@ -24,7 +24,7 @@ type Request struct {
 
 //ParseRequest wraps a (express request) javascript object into what we need
 func NewRequest(req *js.Object) Request {
-	params, err := convertToMapOfStringSlices(req.Get("params").Interface())
+	params, err := convertToMapOfStringSlices(nil)
 
 	if err != nil {
 		log.Println("params: " + err.Error())
@@ -58,11 +58,20 @@ func NewRequest(req *js.Object) Request {
 	headers["authorization"] = req.Call("get", "authorization").String()
 	headers["content-type"] = req.Call("get", "content-type").String()
 
+	var path string
+	pathObject := req.Get("path")
+
+	if pathObject == nil {
+		path = "/"
+	} else {
+		path = pathObject.String()
+	}
+
 	return Request{
-		Path:        req.Get("path").String(),
 		IPAddress:   req.Get("ip").String(),
 		Host:        req.Get("hostname").String(),
 		Method:      req.Get("method").String(),
+		Path:        path,
 		IPAddresses: ips,
 		Headers:     headers,
 		Params:      params,
