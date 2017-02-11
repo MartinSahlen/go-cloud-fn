@@ -54,9 +54,11 @@ func NewRequest(req *js.Object) Request {
 		log.Println("ips: " + err.Error())
 	}
 
-	headers := make(map[string]string)
-	headers["authorization"] = req.Call("get", "authorization").String()
-	headers["content-type"] = req.Call("get", "content-type").String()
+	headers, err := convertToMapOfStrings(req.Get("headers").Interface())
+
+	if err != nil {
+		log.Println("headers: " + err.Error())
+	}
 
 	var path string
 	pathObject := req.Get("path")

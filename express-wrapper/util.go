@@ -6,7 +6,6 @@ import (
 )
 
 func convertToMapOfStringSlices(i interface{}) (m map[string][]string, err error) {
-
 	m = make(map[string][]string)
 
 	if i == nil {
@@ -34,6 +33,29 @@ func convertToMapOfStringSlices(i interface{}) (m map[string][]string, err error
 				if serr == nil {
 					m[k] = sss
 				}
+			}
+		}
+	} else {
+		err = errors.New("Not a valid map")
+	}
+	return
+}
+
+func convertToMapOfStrings(i interface{}) (m map[string]string, err error) {
+	m = make(map[string]string)
+
+	if i == nil {
+		err = errors.New("Got nil trying to convert interface to map of string slices")
+		return
+	}
+
+	tempMap, isMap := i.(map[string]interface{})
+
+	if isMap {
+		for k, v := range tempMap {
+			s, isString := v.(string)
+			if isString {
+				m[k] = s
 			}
 		}
 	} else {
