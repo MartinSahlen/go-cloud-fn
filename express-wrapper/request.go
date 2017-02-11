@@ -11,6 +11,8 @@ import (
 type Request struct {
 	Body        []byte              `json:"body,omitempty"`
 	Path        string              `json:"path,omitempty"`
+	Protocol    string              `json:"protocol,omitempty"`
+	SubDomains  []string            `json:"subdomains,omitempty"`
 	Method      string              `json:"method,omitempty"`
 	Host        string              `json:"host,omitempty"`
 	IPAddresses []string            `json:"ips,omitempty"`
@@ -60,6 +62,12 @@ func NewRequest(req *js.Object) Request {
 		log.Println("headers: " + err.Error())
 	}
 
+	subDomains, err := convertToStringSlice(req.Get("subdomains").Interface())
+
+	if err != nil {
+		log.Println("subdomains: " + err.Error())
+	}
+
 	var path string
 	pathObject := req.Get("path")
 
@@ -73,6 +81,8 @@ func NewRequest(req *js.Object) Request {
 		IPAddress:   req.Get("ip").String(),
 		Host:        req.Get("hostname").String(),
 		Method:      req.Get("method").String(),
+		Protocol:    req.Get("protocol").String(),
+		SubDomains:  subDomains,
 		Path:        path,
 		IPAddresses: ips,
 		Headers:     headers,
