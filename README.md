@@ -2,7 +2,7 @@
 
 A Go thing designed to test Google cloud functions https://cloud.google.com/functions/docs/quickstart.
 
-Write your code using go and compile it to a express.js handler function required by Google cloud functions.
+Write your code using go and compile it to a an commonjs exported express.js handler function required by Google cloud functions (see above links for more information). Currently it only supports http triggers, but more will come (buckets + pubsub)
 
 This project enables you to create full-blown API's with routing et etc. It uses gopherjs and some polyfills for `net/http` + syscalls, see https://github.com/gopherjs/gopherjs/issues/518 for more information.
 
