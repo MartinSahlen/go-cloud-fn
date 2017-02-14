@@ -1,6 +1,10 @@
 package main
 
 import (
+	"encoding/json"
+	"io/ioutil"
+	"log"
+	"net/http"
 	"os"
 
 	"github.com/MartinSahlen/go-cloud-fn/express-wrapper"
@@ -22,11 +26,56 @@ func helloHandler(res express.Response, req express.Request) {
 	res.Write(req.JSON())
 }
 
+type Website struct {
+	URL string `json:"url"`
+}
+
+func websiteHandler(res express.Response, req express.Request) {
+
+	var site Website
+	err := json.Unmarshal(req.Body, &site)
+
+	res.Headers.Write("content-type", "text/html")
+
+	log.Println(string(req.Body))
+
+	if err != nil {
+		log.Println("json error" + err.Error())
+		res.Write([]byte(err.Error()))
+		return
+	}
+
+	log.Println(site)
+
+	go func() {
+		r, err := http.DefaultClient.Get(site.URL)
+
+		if err != nil {
+			log.Println(err.Error())
+			res.Write([]byte(err.Error()))
+			return
+		}
+
+		byt, err := ioutil.ReadAll(r.Body)
+
+		if err != nil {
+			log.Println(err.Error())
+			res.Write([]byte(err.Error()))
+			return
+		}
+
+		res.Status = 200
+		res.Write(byt)
+	}()
+
+}
+
 //EntryPoint is the main handler and entrypoint for the google cloud function
 func EntryPoint(req, res *js.Object) {
 
 	r := router.New(rootHandler)
 	r.Handle("GET", "/hello/:ergegr", helloHandler)
+	r.Handle("POST", "/site", websiteHandler)
 
 	r.Serve(express.NewResponse(res), express.NewRequest(req))
 }
