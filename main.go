@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -10,6 +11,7 @@ import (
 	"github.com/MartinSahlen/go-cloud-fn/express-wrapper"
 	"github.com/MartinSahlen/go-cloud-fn/router"
 	"github.com/gopherjs/gopherjs/js"
+	"gopkg.in/go-playground/validator.v9"
 )
 
 var googleCloudFunctionName = os.Getenv("GOOGLE_CLOUD_FUNCTION_NAME")
@@ -27,11 +29,11 @@ func helloHandler(res express.Response, req express.Request) {
 }
 
 type Website struct {
-	URL string `json:"url"`
+	URL string `json:"url"validate:"required"`
 }
 
 func websiteHandler(res express.Response, req express.Request) {
-
+	validate := validator.New()
 	var site Website
 	err := json.Unmarshal(req.Body, &site)
 
@@ -45,7 +47,34 @@ func websiteHandler(res express.Response, req express.Request) {
 		return
 	}
 
-	log.Println(site)
+	err = validate.Struct(site)
+	if err != nil {
+		errs := err.(validator.ValidationErrors)
+
+		for _, err := range errs {
+
+			fmt.Println(err.Namespace())
+			fmt.Println(err.Field())
+			fmt.Println(err.StructNamespace()) // can differ when a custom TagNameFunc is registered or
+			fmt.Println(err.StructField())     // by passing alt name to ReportError like below
+			fmt.Println(err.Tag())
+			fmt.Println(err.ActualTag())
+			fmt.Println(err.Kind())
+			fmt.Println(err.Type())
+			fmt.Println(err.Value())
+			fmt.Println(err.Param())
+			fmt.Println()
+		}
+
+		bytes, err := json.Marshal(errs)
+		if err != nil {
+			res.Write([]byte(err.Error()))
+			return
+		}
+		res.Status = 400
+		res.Write(bytes)
+		return
+	}
 
 	go func() {
 		r, err := http.DefaultClient.Get(site.URL)
