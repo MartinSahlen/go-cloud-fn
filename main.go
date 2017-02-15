@@ -28,18 +28,16 @@ func helloHandler(res express.Response, req express.Request) {
 	res.Write(req.JSON())
 }
 
-type Website struct {
-	URL string `json:"url"validate:"required"`
+type website struct {
+	URL string `json:"url"validate:"required,url"`
 }
 
 func websiteHandler(res express.Response, req express.Request) {
 	validate := validator.New()
-	var site Website
+	var site website
 	err := json.Unmarshal(req.Body, &site)
 
 	res.Headers.Write("content-type", "text/html")
-
-	log.Println(string(req.Body))
 
 	if err != nil {
 		log.Println("json error" + err.Error())
@@ -48,35 +46,27 @@ func websiteHandler(res express.Response, req express.Request) {
 	}
 
 	err = validate.Struct(site)
+
 	if err != nil {
 		errs := err.(validator.ValidationErrors)
-
 		for _, err := range errs {
-
-			fmt.Println(err.Namespace())
-			fmt.Println(err.Field())
-			fmt.Println(err.StructNamespace()) // can differ when a custom TagNameFunc is registered or
-			fmt.Println(err.StructField())     // by passing alt name to ReportError like below
 			fmt.Println(err.Tag())
 			fmt.Println(err.ActualTag())
 			fmt.Println(err.Kind())
 			fmt.Println(err.Type())
 			fmt.Println(err.Value())
-			fmt.Println(err.Param())
-			fmt.Println()
-		}
-
-		bytes, err := json.Marshal(errs)
-		if err != nil {
-			res.Write([]byte(err.Error()))
-			return
 		}
 		res.Status = 400
-		res.Write(bytes)
+		res.Write([]byte(errs.Error()))
 		return
 	}
 
 	go func() {
+
+		packageFile, err := os.Open("./package.json")
+		b, err := ioutil.ReadAll(packageFile)
+		log.Println(string(b))
+
 		r, err := http.DefaultClient.Get(site.URL)
 
 		if err != nil {
@@ -103,8 +93,8 @@ func websiteHandler(res express.Response, req express.Request) {
 func EntryPoint(req, res *js.Object) {
 
 	r := router.New(rootHandler)
-	r.Handle("GET", "/hello/:ergegr", helloHandler)
-	r.Handle("POST", "/site", websiteHandler)
+	r.Handle(http.MethodGet, "/hello/:ergegr", helloHandler)
+	r.Handle(http.MethodPost, "/site", websiteHandler)
 
 	r.Serve(express.NewResponse(res), express.NewRequest(req))
 }
