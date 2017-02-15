@@ -1,3 +1,0 @@
-package: github.com/MartinSahlen/go-cloud-fn
-ignore:
-- github.com/gopherjs/gopherjs

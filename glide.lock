@@ -1,9 +1,0 @@
-hash: 0e37202dc6a95fdbdb48593edfa27836be66cc20781c92ffc24693805ce1fb1f
-updated: 2017-02-10T13:22:40.797560316+01:00
-imports:
-- name: github.com/docker/docker
-  version: eaffb3099a4ed2701fc0934b39b7dcdd1ca62219
-  subpackages:
-  - pkg/namesgenerator
-  - pkg/random
-testImports: []

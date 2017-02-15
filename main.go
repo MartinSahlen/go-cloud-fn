@@ -1,12 +1,17 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
+
+	"golang.org/x/oauth2/google"
+
+	bigquery "google.golang.org/api/bigquery/v2"
 
 	"github.com/MartinSahlen/go-cloud-fn/express-wrapper"
 	"github.com/MartinSahlen/go-cloud-fn/router"
@@ -86,7 +91,45 @@ func websiteHandler(res express.Response, req express.Request) {
 		res.Status = 200
 		res.Write(byt)
 	}()
+}
 
+func helloBigQuery(res express.Response, req express.Request) {
+	go func() {
+		client, err := google.DefaultClient(context.Background())
+
+		if err != nil {
+			log.Println(err.Error())
+			res.Write([]byte(err.Error()))
+			return
+		}
+
+		bigqueryService, err := bigquery.New(client)
+
+		if err != nil {
+			log.Println(err.Error())
+			res.Write([]byte(err.Error()))
+			return
+		}
+
+		tables, err := bigqueryService.Tables.List(os.Getenv("PROJECT"), "DATASET_ID").Do()
+
+		if err != nil {
+			log.Println(err.Error())
+			res.Write([]byte(err.Error()))
+			return
+		}
+
+		byt, err := tables.MarshalJSON()
+
+		if err != nil {
+			log.Println(err.Error())
+			res.Write([]byte(err.Error()))
+			return
+		}
+		res.Headers.Write("content-type", "application/json")
+		res.Status = 200
+		res.Write(byt)
+	}()
 }
 
 //EntryPoint is the main handler and entrypoint for the google cloud function
@@ -95,6 +138,7 @@ func EntryPoint(req, res *js.Object) {
 	r := router.New(rootHandler)
 	r.Handle(http.MethodGet, "/hello/:ergegr", helloHandler)
 	r.Handle(http.MethodPost, "/site", websiteHandler)
+	r.Handle(http.MethodGet, "/bq", helloBigQuery)
 
 	r.Serve(express.NewResponse(res), express.NewRequest(req))
 }
