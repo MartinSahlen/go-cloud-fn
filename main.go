@@ -1,17 +1,12 @@
 package main
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
-
-	"golang.org/x/oauth2/google"
-
-	bigquery "google.golang.org/api/bigquery/v2"
 
 	"github.com/MartinSahlen/go-cloud-fn/express-wrapper"
 	"github.com/MartinSahlen/go-cloud-fn/router"
@@ -34,7 +29,7 @@ func helloHandler(res express.Response, req express.Request) {
 }
 
 type website struct {
-	URL string `json:"url"validate:"required,url"`
+	URL string `json:"url" validate:"required,url"`
 }
 
 func websiteHandler(res express.Response, req express.Request) {
@@ -93,7 +88,7 @@ func websiteHandler(res express.Response, req express.Request) {
 	}()
 }
 
-func helloBigQuery(res express.Response, req express.Request) {
+/*func helloBigQuery(res express.Response, req express.Request) {
 	go func() {
 		client, err := google.DefaultClient(context.Background())
 
@@ -130,7 +125,7 @@ func helloBigQuery(res express.Response, req express.Request) {
 		res.Status = 200
 		res.Write(byt)
 	}()
-}
+}*/
 
 //EntryPoint is the main handler and entrypoint for the google cloud function
 func EntryPoint(req, res *js.Object) {
@@ -138,7 +133,7 @@ func EntryPoint(req, res *js.Object) {
 	r := router.New(rootHandler)
 	r.Handle(http.MethodGet, "/hello/:ergegr", helloHandler)
 	r.Handle(http.MethodPost, "/site", websiteHandler)
-	r.Handle(http.MethodGet, "/bq", helloBigQuery)
+	//r.Handle(http.MethodGet, "/bq", helloBigQuery)
 
 	r.Serve(express.NewResponse(res), express.NewRequest(req))
 }
