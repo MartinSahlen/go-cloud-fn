@@ -14,7 +14,13 @@ import (
 	"gopkg.in/go-playground/validator.v9"
 )
 
-var googleCloudFunctionName = os.Getenv("GOOGLE_CLOUD_FUNCTION_NAME")
+func GetCloudFunctionName() string {
+	var googleCloudFunctionName = os.Getenv("GOOGLE_CLOUD_FUNCTION_NAME")
+	if googleCloudFunctionName == "" {
+		return "helloGO"
+	}
+	return googleCloudFunctionName
+}
 
 func rootHandler(res express.Response, req express.Request) {
 	res.Headers.Write("content-type", "application/json")
@@ -88,59 +94,16 @@ func websiteHandler(res express.Response, req express.Request) {
 	}()
 }
 
-/*func helloBigQuery(res express.Response, req express.Request) {
-	go func() {
-		client, err := google.DefaultClient(context.Background())
-
-		if err != nil {
-			log.Println(err.Error())
-			res.Write([]byte(err.Error()))
-			return
-		}
-
-		bigqueryService, err := bigquery.New(client)
-
-		if err != nil {
-			log.Println(err.Error())
-			res.Write([]byte(err.Error()))
-			return
-		}
-
-		tables, err := bigqueryService.Tables.List(os.Getenv("PROJECT"), "DATASET_ID").Do()
-
-		if err != nil {
-			log.Println(err.Error())
-			res.Write([]byte(err.Error()))
-			return
-		}
-
-		byt, err := tables.MarshalJSON()
-
-		if err != nil {
-			log.Println(err.Error())
-			res.Write([]byte(err.Error()))
-			return
-		}
-		res.Headers.Write("content-type", "application/json")
-		res.Status = 200
-		res.Write(byt)
-	}()
-}*/
-
 //EntryPoint is the main handler and entrypoint for the google cloud function
 func EntryPoint(req, res *js.Object) {
 
 	r := router.New(rootHandler)
 	r.Handle(http.MethodGet, "/hello/:ergegr", helloHandler)
 	r.Handle(http.MethodPost, "/site", websiteHandler)
-	//r.Handle(http.MethodGet, "/bq", helloBigQuery)
 
 	r.Serve(express.NewResponse(res), express.NewRequest(req))
 }
 
 func main() {
-	if googleCloudFunctionName == "" {
-		googleCloudFunctionName = "helloGO"
-	}
-	js.Module.Get("exports").Set(googleCloudFunctionName, EntryPoint)
+	js.Module.Get("exports").Set(GetCloudFunctionName(), EntryPoint)
 }
