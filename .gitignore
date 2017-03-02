@@ -5,3 +5,4 @@ polyfill.inc.js
 node_modules
 npm-debug.log
 /vendor/
+.DS_Store
