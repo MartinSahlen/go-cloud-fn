@@ -21,7 +21,7 @@ type Request struct {
 	Headers     map[string]string   `json:"headers,omitempty"`
 	Query       map[string][]string `json:"query,omitempty"`
 	Cookies     map[string][]string `json:"cookies,omitempty"`
-	Raw         *js.Object          `json:"omit"`
+	Raw         *js.Object          `json:"-"`
 }
 
 //ParseRequest wraps a (express request) javascript object into what we need
