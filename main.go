@@ -12,24 +12,24 @@
 package main
 
 import (
-	"github.com/MartinSahlen/go-cloud-fn/app"
+	"net/http"
+
 	"github.com/MartinSahlen/go-cloud-fn/shim"
-	"github.com/goadesign/goa"
-	"github.com/goadesign/goa/middleware"
 )
 
 func main() {
-	service := goa.New("adder")
-	service.Use(middleware.RequestID())
-	service.Use(middleware.LogRequest(true))
-	service.Use(middleware.ErrorHandler(service, true))
-	service.Use(middleware.Recover())
+	/*
+		service := goa.New("adder")
+		service.Use(middleware.RequestID())
+		service.Use(middleware.LogRequest(true))
+		service.Use(middleware.ErrorHandler(service, true))
+		service.Use(middleware.Recover())
 
-	adderCtrl := NewOperandsController(service)
-	app.MountOperandsController(service, adderCtrl)
+		adderCtrl := NewOperandsController(service)
+		app.MountOperandsController(service, adderCtrl)
+	*/
 
-	shim.ServeHTTP(service.Mux.ServeHTTP)
-	/*shim.ServeHTTP(func(w http.ResponseWriter, r *http.Request) {
+	shim.ServeHTTP(func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("hello, world"))
-	})*/
+	})
 }
