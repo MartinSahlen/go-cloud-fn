@@ -1,25 +1,12 @@
 {
   "body": "{}",
   "headers":{
-    "host": "us-central1-uc-prox-production.cloudfunctions.net",
+    "host": "localhost:8080",
     "user-agent": "PostmanRuntime/3.0.11-hotfix.2 AppEngine-Google; (+http://code.google.com/appengine; appid: s~gcf-http-proxy)",
-    "accept": "*/*",
     "cache-control": "no-cache",
-    "content-type": "application/json",
-    "function-execution-id": "uk6d0cms3u5x",
-    "postman-token": "048fea4b-e1d9-426f-86a1-c42ef71fc109",
-    "x-appengine-auth-domain": "gmail.com",
-    "x-appengine-country": "ZZ",
-    "x-appengine-inbound-appid": "gcf-http-proxy",
-    "x-appengine-user-email": "",
-    "x-appengine-user-id": "",
-    "x-appengine-user-nickname": "",
-    "x-appengine-user-organization": "",
-    "x-cloud-trace-context": "e889e814b0909da42a0d68a718fbe9a0/8174181405353502550",
     "x-forwarded-for": "94.18.188.226",
-    "x-zoo": "app-id=gcf-http-proxy,domain=gmail.com,host=*.cloudfunctions.net",
-    "accept-encoding": "gzip" },
+    "x-zoo": "app-id=gcf-http-proxy,domain=gmail.com,host=*.cloudfunctions.net" },
  "method": "GET",
  "remote_addr": "94.18.188.226",
- "url": "http://us-central1-uc-prox-production.cloudfunctions.net/add/2/2"
+ "url": "http://localhost:8080/add/2/2"
 }

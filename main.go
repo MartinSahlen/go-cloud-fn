@@ -12,24 +12,25 @@
 package main
 
 import (
+	"log"
 	"net/http"
+	"net/url"
 
 	"github.com/MartinSahlen/go-cloud-fn/shim"
+	"github.com/acmacalister/helm"
 )
 
 func main() {
-	/*
-		service := goa.New("adder")
-		service.Use(middleware.RequestID())
-		service.Use(middleware.LogRequest(true))
-		service.Use(middleware.ErrorHandler(service, true))
-		service.Use(middleware.Recover())
 
-		adderCtrl := NewOperandsController(service)
-		app.MountOperandsController(service, adderCtrl)
-	*/
-
-	shim.ServeHTTP(func(w http.ResponseWriter, r *http.Request) {
+	r := helm.New(func(w http.ResponseWriter, r *http.Request, params url.Values) {
+		log.Println(r)
 		w.Write([]byte("hello, world"))
 	})
+
+	r.Handle("GET", "/yolo", func(w http.ResponseWriter, r *http.Request, params url.Values) {
+		log.Println(r)
+		w.Write([]byte("hello, GET"))
+	})
+
+	shim.ServeHTTP(r.ServeHTTP)
 }
