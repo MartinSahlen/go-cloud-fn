@@ -12,24 +12,34 @@
 package main
 
 import (
-	"log"
 	"net/http"
-	"net/url"
+	"time"
 
 	"github.com/MartinSahlen/go-cloud-fn/shim"
-	"github.com/acmacalister/helm"
+	"github.com/pressly/chi"
+	"github.com/pressly/chi/middleware"
 )
 
 func main() {
+	r := chi.NewRouter()
 
-	r := helm.New(func(w http.ResponseWriter, r *http.Request, params url.Values) {
-		log.Println(r)
-		w.Write([]byte("hello, world"))
-	})
+	// A good base middleware stack
+	r.Use(middleware.RequestID)
+	r.Use(middleware.RealIP)
+	r.Use(middleware.Logger)
+	r.Use(middleware.Recoverer)
+	r.Use(middleware.StripSlashes)
+	// When a client closes their connection midway through a request, the
+	// http.CloseNotifier will cancel the request context (ctx).
+	r.Use(middleware.CloseNotify)
 
-	r.Handle("GET", "/yolo", func(w http.ResponseWriter, r *http.Request, params url.Values) {
-		log.Println(r)
-		w.Write([]byte("hello, GET"))
+	// Set a timeout value on the request context (ctx), that will signal
+	// through ctx.Done() that the request has timed out and further
+	// processing should be stopped.
+	r.Use(middleware.Timeout(60 * time.Second))
+
+	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("hi"))
 	})
 
 	shim.ServeHTTP(r.ServeHTTP)
