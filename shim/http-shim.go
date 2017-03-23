@@ -27,6 +27,27 @@ type HTTPResponse struct {
 
 type RequestHandler func(http.ResponseWriter, *http.Request)
 
+func DebugRequest(r *http.Request) {
+
+	params := ""
+	for k, v := range r.URL.Query() {
+		params += k + ": " + strings.Join(v, "), (")
+	}
+	headers := ""
+	for k, v := range r.Header {
+		headers += k + ": " + strings.Join(v, "), (")
+	}
+
+	log.Println("Host: " + r.Host)
+
+	log.Println("URL Hostname: " + r.URL.Hostname())
+	log.Println("URL Query: " + params)
+	log.Println("URL Headers: " + headers)
+	log.Println("URL Path: " + r.URL.Path)
+	log.Println("URL Port: " + r.URL.Port())
+	log.Println("URL Request URI: " + r.URL.RequestURI())
+}
+
 func ServeHTTP(h RequestHandler) {
 	stdin, err := ioutil.ReadAll(os.Stdin)
 	if err != nil {
@@ -38,13 +59,21 @@ func ServeHTTP(h RequestHandler) {
 		log.Fatal(err)
 	}
 
-	r := httptest.NewRequest(httpRequest.Method, httpRequest.URL, bytes.NewBufferString(httpRequest.Body))
+	r, err := http.NewRequest(httpRequest.Method, httpRequest.URL, bytes.NewBufferString(httpRequest.Body))
+
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	for k, v := range httpRequest.Header {
 		r.Header.Add(k, v)
 	}
 
 	r.RemoteAddr = httpRequest.RemoteAddr
+
+	if r.URL.Path == "" {
+		r.URL.Path = "/"
+	}
 
 	w := httptest.NewRecorder()
 

@@ -1,12 +1,9 @@
 {
   "body": "{}",
   "headers":{
-    "host": "localhost:8080",
-    "user-agent": "PostmanRuntime/3.0.11-hotfix.2 AppEngine-Google; (+http://code.google.com/appengine; appid: s~gcf-http-proxy)",
     "cache-control": "no-cache",
-    "x-forwarded-for": "94.18.188.226",
     "x-zoo": "app-id=gcf-http-proxy,domain=gmail.com,host=*.cloudfunctions.net" },
  "method": "GET",
  "remote_addr": "94.18.188.226",
- "url": "http://localhost:8080/add/2/2?q=lol&t=egreg"
+ "url": "http://localhost:8080/api/add/37/3"
 }
