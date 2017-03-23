@@ -61,7 +61,7 @@ exports.{{.FunctionName}} = function(req, res) {
     'url': fullUrl
   };
 
-  result = spawnSync('./function', [], {
+  result = spawnSync('./{{.ExecutableName}}', [], {
     input: JSON.stringify(httpRequest),
     stdio: 'pipe',
   });
