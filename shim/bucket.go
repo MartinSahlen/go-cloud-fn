@@ -1,1 +1,3 @@
 package shim
+
+func HandleBucketEvent() {}
