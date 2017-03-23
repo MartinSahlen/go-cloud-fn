@@ -1,0 +1,3 @@
+package shim
+
+func HandlePubsubEvent() {}
