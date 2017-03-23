@@ -27,7 +27,8 @@ func parseTemplate(templateString string, data interface{}) (string, error) {
 	return b.String(), nil
 }
 
-var buildSh = `GOOS=linux go build -o {{.TargetDir}}/{{.ExecutableName}}`
+var buildSh = `GOOS=linux go build -o {{.TargetDir}}/{{.ExecutableName}}
+cp index.js {{.TargetDir}}`
 var deploySh = `gcloud beta functions deploy {{.FunctionName}} {{if .TriggerHTTP}}--trigger-http{{end}} --stage-bucket {{.StageBucket}} --local-path {{.TargetDir}}`
 var httpJs = `const spawnSync = require('child_process').spawnSync;
 
