@@ -1,9 +1,0 @@
-{
-  "body": "{}",
-  "headers":{
-    "cache-control": "no-cache",
-    "x-zoo": "app-id=gcf-http-proxy,domain=gmail.com,host=*.cloudfunctions.net" },
- "method": "GET",
- "remote_addr": "94.18.188.226",
- "url": "http://localhost:8080/api/add/37/3"
-}
