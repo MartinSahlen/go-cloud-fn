@@ -19,41 +19,13 @@ import (
 )
 
 func main() {
-	/*
-		r := chi.NewRouter()
-
-		// A good base middleware stack
-		r.Use(middleware.RequestID)
-		r.Use(middleware.RealIP)
-		r.Use(middleware.Logger)
-		r.Use(middleware.Recoverer)
-		r.Use(middleware.StripSlashes)
-		// When a client closes their connection midway through a request, the
-		// http.CloseNotifier will cancel the request context (ctx).
-		r.Use(middleware.CloseNotify)
-
-		// Set a timeout value on the request context (ctx), that will signal
-		// through ctx.Done() that the request has timed out and further
-		// processing should be stopped.
-		r.Use(middleware.Timeout(60 * time.Second))
-
-		r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-			shim.DebugRequest(r)
-
-			w.Write([]byte("hi"))
-		})
-		http.ListenAndServe(":8080", r)
-		shim.ServeHTTP(r.ServeHTTP)*/
 	service := goa.New("adder")
 	// Setup basic middleware
 	service.Use(middleware.RequestID())
 	service.Use(middleware.LogRequest(true))
 	service.Use(middleware.ErrorHandler(service, true))
 	service.Use(middleware.Recover())
-
 	adderController := NewOperandsController(service)
 	app.MountOperandsController(service, adderController)
-
 	shim.ServeHTTP(service.Mux.ServeHTTP)
-
 }

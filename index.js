@@ -8,6 +8,8 @@ exports.helloGET = function(req, res) {
       requestBody = JSON.stringify(req.body);
       break;
     case 'application/x-www-form-urlencoded':
+      //The body parser for cloud functions does this, so just play along
+      req.set('content-type', 'application/json')
       requestBody = JSON.stringify(req.body);
       break;
     case 'application/octet-stream':
@@ -27,8 +29,6 @@ exports.helloGET = function(req, res) {
     'remote_addr': req.ip,
     'url': fullUrl
   };
-
-  console.log(httpRequest);
 
   result = spawnSync('./function', [], {
     input: JSON.stringify(httpRequest),

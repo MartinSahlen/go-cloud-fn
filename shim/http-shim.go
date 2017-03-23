@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-type HTTPRequest struct {
+type httpRequest struct {
 	Body       string            `json:"body"`
 	Header     map[string]string `json:"headers"`
 	Method     string            `json:"method"`
@@ -19,57 +19,36 @@ type HTTPRequest struct {
 	URL        string            `json:"url"`
 }
 
-type HTTPResponse struct {
+type httpResponse struct {
 	Body       string            `json:"body"`
 	Header     map[string]string `json:"headers"`
 	StatusCode int               `json:"status_code"`
 }
 
-type RequestHandler func(http.ResponseWriter, *http.Request)
-
-func DebugRequest(r *http.Request) {
-
-	params := ""
-	for k, v := range r.URL.Query() {
-		params += k + ": " + strings.Join(v, "), (")
-	}
-	headers := ""
-	for k, v := range r.Header {
-		headers += k + ": " + strings.Join(v, "), (")
-	}
-
-	log.Println("Host: " + r.Host)
-
-	log.Println("URL Hostname: " + r.URL.Hostname())
-	log.Println("URL Query: " + params)
-	log.Println("URL Headers: " + headers)
-	log.Println("URL Path: " + r.URL.Path)
-	log.Println("URL Port: " + r.URL.Port())
-	log.Println("URL Request URI: " + r.URL.RequestURI())
-}
-
-func ServeHTTP(h RequestHandler) {
+//ServeHTTP takes your http.HandlerFunc and runs it through the shim.
+func ServeHTTP(h http.HandlerFunc) {
 	stdin, err := ioutil.ReadAll(os.Stdin)
 	if err != nil {
 		log.Fatal(err)
 	}
-	var httpRequest HTTPRequest
-	err = json.Unmarshal(stdin, &httpRequest)
+
+	var request httpRequest
+	err = json.Unmarshal(stdin, &request)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	r, err := http.NewRequest(httpRequest.Method, httpRequest.URL, bytes.NewBufferString(httpRequest.Body))
+	r, err := http.NewRequest(request.Method, request.URL, bytes.NewBufferString(request.Body))
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	for k, v := range httpRequest.Header {
+	for k, v := range request.Header {
 		r.Header.Add(k, v)
 	}
 
-	r.RemoteAddr = httpRequest.RemoteAddr
+	r.RemoteAddr = request.RemoteAddr
 
 	if r.URL.Path == "" {
 		r.URL.Path = "/"
@@ -85,13 +64,13 @@ func ServeHTTP(h RequestHandler) {
 	for k, v := range resp.Header {
 		header[k] = strings.Join(v, ",")
 	}
-	httpResponse := HTTPResponse{
+	response := httpResponse{
 		Body:       w.Body.String(),
 		Header:     header,
 		StatusCode: resp.StatusCode,
 	}
 
-	out, err := json.Marshal(&httpResponse)
+	out, err := json.Marshal(&response)
 	if err != nil {
 		log.Fatal(err)
 	}
