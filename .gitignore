@@ -1,6 +1,2 @@
 target
 .DS_Store
-tool/
-client/
-swagger/
-app/

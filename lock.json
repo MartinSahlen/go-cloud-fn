@@ -1,12 +1,25 @@
 {
-    "memo": "",
+    "memo": "b8d71edfbc4289396a962935d96aa3e544bdef0ce9eb55e27e154807306baf62",
     "projects": [
         {
-            "name": "github.com/docopt/docopt-go",
+            "name": "golang.org/x/net",
             "branch": "master",
-            "revision": "784ddc588536785e7299f7272f39101f7faccc3f",
+            "revision": "6c23252515492caf9b228a9d5cabcdbde29f7f82",
             "packages": [
-                "."
+                "context",
+                "context/ctxhttp"
+            ]
+        },
+        {
+            "name": "google.golang.org/api",
+            "branch": "master",
+            "revision": "48e49d1645e228d1c50c3d54fb476b2224477303",
+            "packages": [
+                "gensupport",
+                "googleapi",
+                "googleapi/internal/uritemplates",
+                "pubsub/v1beta2",
+                "storage/v1beta2"
             ]
         }
     ]
