@@ -98,6 +98,7 @@ Usage:
 Flags:
   -e, --emulator                Deploy to emulator
   -m, --memory string           Set function memory [MAX 2048MB] (default "1024MB")
+	-r, --region string           Set gcloud region
   -s, --stage-bucket string     Set GCS bucket to upload zip bundle
   -o, --timeout string          Set function timeout [MAX 540s] (default "540s")
   -b, --trigger-bucket string   Set function to trigger on this GCS bucket event

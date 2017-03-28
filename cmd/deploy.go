@@ -82,6 +82,11 @@ set of parameters.`,
 				deployArguments,
 				"--memory", memory,
 				"--stage-bucket", stageBucket)
+			if region != "" {
+				deployArguments = append(
+					deployArguments,
+					"--region", region)
+			}
 		}
 
 		err = ioutil.WriteFile(indexPath, []byte(index), os.ModePerm)
@@ -107,6 +112,7 @@ var triggerBucket string
 var triggerTopic string
 var memory string
 var timeout string
+var region string
 
 func init() {
 	RootCmd.AddCommand(deployCmd)
@@ -117,4 +123,5 @@ func init() {
 	deployCmd.Flags().StringVarP(&triggerTopic, "trigger-topic", "t", "", "Set function to trigger on this Pubsub topic")
 	deployCmd.Flags().StringVarP(&memory, "memory", "m", "1024MB", "Set function memory [MAX 2048MB]")
 	deployCmd.Flags().StringVarP(&timeout, "timeout", "o", "540s", "Set function timeout [MAX 540s]")
+	deployCmd.Flags().StringVarP(&region, "region", "r", "", "Set gcloud region")
 }
