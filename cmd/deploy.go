@@ -72,16 +72,19 @@ set of parameters.`,
 			"--timeout", timeout,
 		}
 		//Use functions if it's emulator we're deploying to.
+		var buildCmd string
 		if emulator {
 			deployArguments[0] = "functions deploy"
+			buildCmd = "go build -o "
 		} else {
+			buildCmd = "GOOS=linux go build -o "
 			deployArguments = append(
 				deployArguments,
 				"--memory", memory,
 				"--stage-bucket", stageBucket)
 		}
 
-		compile, err := exec.Command("sh", "-c", "go build -o "+targetDir+functionName).CombinedOutput()
+		compile, err := exec.Command("sh", "-c", buildCmd+targetDir+functionName).CombinedOutput()
 		if err != nil {
 			log.Println(compile)
 			return
