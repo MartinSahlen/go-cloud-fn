@@ -32,7 +32,7 @@ set of parameters.`,
 			return
 		}
 		functionName := args[0]
-		targetDir := "target/" + uuid.NewV4().String() + "/"
+		targetDir := "./target/" + uuid.NewV4().String() + "/"
 		index, err := t.GenerateIndex(t.IndexTemplateData{
 			FunctionName: functionName,
 			TargetDir:    targetDir,
@@ -43,11 +43,6 @@ set of parameters.`,
 			return
 		}
 		err = os.MkdirAll(targetDir, os.ModePerm)
-		if err != nil {
-			log.Println(err)
-			return
-		}
-		err = ioutil.WriteFile(targetDir+"index.js", []byte(index), os.ModePerm)
 		if err != nil {
 			log.Println(err)
 			return
@@ -65,26 +60,37 @@ set of parameters.`,
 			trigger = append(trigger, triggerTopic)
 		}
 
+		//Standard deploy arguments
 		deployArguments := []string{
 			"gcloud beta functions deploy",
 			functionName,
 			"--local-path", targetDir,
 			"--timeout", timeout,
 		}
+
 		//Use functions if it's emulator we're deploying to.
 		var buildCmd string
+		var indexPath string
 		if emulator {
 			deployArguments[0] = "functions deploy"
-			buildCmd = "go build -o "
+			buildCmd = "go build -o " + targetDir + functionName
+			indexPath = targetDir + "index.js"
 		} else {
-			buildCmd = "GOOS=linux go build -o "
+			buildCmd = "GOOS=linux go build -o " + targetDir + functionName
+			indexPath = targetDir + "index.js"
 			deployArguments = append(
 				deployArguments,
 				"--memory", memory,
 				"--stage-bucket", stageBucket)
 		}
 
-		compile, err := exec.Command("sh", "-c", buildCmd+targetDir+functionName).CombinedOutput()
+		err = ioutil.WriteFile(indexPath, []byte(index), os.ModePerm)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		compile, err := exec.Command("sh", "-c", buildCmd).CombinedOutput()
 		if err != nil {
 			log.Println(compile)
 			return

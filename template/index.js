@@ -2,7 +2,7 @@
 function shimHandler(data) {
   return new Promise((resolve, reject) => {
     //Spawn the function and inject the env from the parent process.
-    const p = require('child_process').spawn('./{{.TargetDir}}{{.FunctionName}}', [], {
+    const p = require('child_process').spawn('./{{.FunctionName}}', [], {
       env: process.env,
     });
     var lastMessage;
@@ -13,7 +13,7 @@ function shimHandler(data) {
     })
     p.stdout.on('data', (out) => {
       console.log(out.toString());
-      lastMessage = err;
+      lastMessage = out;
     })
     p.on('close', (code) => {
       if (code !== 0) {
@@ -66,7 +66,7 @@ function handleHttp(req, res) {
     'url': fullUrl
   };
 
-  shimHandler(request)
+  shimHandler(httpRequest)
   .then((result) => {
     data = JSON.parse(result);
     res.status(data.status_code);
