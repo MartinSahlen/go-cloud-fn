@@ -1,26 +1,21 @@
+// Copyright © 2017 NAME HERE <EMAIL ADDRESS>
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package main
 
-import (
-	"log"
-
-	"github.com/MartinSahlen/go-cloud-fn/shim"
-	"google.golang.org/api/pubsub/v1beta2"
-	"google.golang.org/api/storage/v1beta2"
-)
-
-func PubsubHandler(message pubsub.PubsubMessage) {
-	log.Println(message)
-}
-
-func BucketHandler(object storage.Object) {
-	log.Println("Got event for object: " + object.Name + " in bucket " + object.Bucket)
-	if object.TimeDeleted == "" {
-		log.Println("The object was created")
-	} else {
-		log.Println("The object was deleted")
-	}
-}
+import "github.com/MartinSahlen/go-cloud-fn/cmd"
 
 func main() {
-	shim.HandleBucketEvent(BucketHandler)
+	cmd.Execute()
 }
