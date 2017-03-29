@@ -2,7 +2,7 @@
 function shimHandler(data) {
   return new Promise((resolve, reject) => {
     //Spawn the function and inject the env from the parent process.
-    const p = require('child_process').spawn('./{{.FunctionName}}', [], {
+    const p = require('child_process').execFile('./{{.FunctionName}}', [], {
       env: process.env,
     });
     var lastMessage;
