@@ -82,6 +82,10 @@ function handleHttp(req, res) {
 exports['{{.FunctionName}}'] = function(req, res) {
   return handleHttp(req, res);
 }// {{ else }}
-exports['{{.FunctionName}}'] = function(event) {
-  return shimHandler(event.data);
+exports['{{.FunctionName}}'] = function(event, callback) {
+  return shimHandler(event.data).then(function() {
+    callback();
+  }).catch(function() {
+    callback(new Error("Function failed"));
+  });
 }// {{ end }}
