@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -29,6 +30,11 @@ set of parameters.`,
 		}
 		if !triggerHTTP && triggerBucket == "" && triggerTopic == "" {
 			log.Println("You need to set either trigger-http, trigger-bucket or trigger-topic")
+			return
+		}
+		customFlags := os.Getenv("GO_CLOUD_FN_CUSTOM_FLAGS")
+		if strings.Contains(customFlags, " -o ") {
+			log.Println("Cannot specify '-o' output in custom flags")
 			return
 		}
 		functionName := args[0]
@@ -73,10 +79,11 @@ set of parameters.`,
 		var indexPath string
 		if emulator {
 			deployArguments[0] = "functions deploy"
-			buildCmd = "go build -o " + targetDir + functionName
+			buildCmd = fmt.Sprintf("go build %v -o %v%v", customFlags, targetDir, functionName)
 			indexPath = targetDir + "index.js"
 		} else {
-			buildCmd = "GOOS=linux go build -o " + targetDir + functionName
+			buildCmd = fmt.Sprintf("GOOS=linux go build %v -o %v%v", customFlags, targetDir, functionName)
+			log.Println(buildCmd)
 			indexPath = targetDir + "index.js"
 			deployArguments = append(
 				deployArguments,
@@ -97,7 +104,7 @@ set of parameters.`,
 
 		compile, err := exec.Command("sh", "-c", buildCmd).CombinedOutput()
 		if err != nil {
-			log.Println(compile)
+			log.Println(string(compile))
 			return
 		}
 		deploy, _ := exec.Command("sh", "-c", strings.Join(append(deployArguments, trigger...), " ")).CombinedOutput()
