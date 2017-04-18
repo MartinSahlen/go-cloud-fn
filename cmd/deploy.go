@@ -83,7 +83,6 @@ set of parameters.`,
 			indexPath = targetDir + "index.js"
 		} else {
 			buildCmd = fmt.Sprintf("GOOS=linux go build %v -o %v%v", customFlags, targetDir, functionName)
-			log.Println(buildCmd)
 			indexPath = targetDir + "index.js"
 			deployArguments = append(
 				deployArguments,
