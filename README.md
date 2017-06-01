@@ -4,7 +4,6 @@
 Run `go get github.com/MartinSahlen/go-cloud-fn` to get it.
 You need to have [Google cloud SDK](https://cloud.google.com/sdk/downloads) installed, as well as
 the [Cloud functions emulator](https://github.com/GoogleCloudPlatform/cloud-functions-emulator/).
-Currently the emulator does not seem to work though :(
 
 # Usage
 Usage is meant to be pretty idiomatic:
