@@ -68,9 +68,9 @@ set of parameters.`,
 
 		//Standard deploy arguments
 		deployArguments := []string{
+			"cd " + targetDir + " && ",
 			"gcloud beta functions deploy",
 			functionName,
-			"--local-path", targetDir,
 			"--timeout", timeout,
 		}
 
@@ -78,7 +78,7 @@ set of parameters.`,
 		var buildCmd string
 		var indexPath string
 		if emulator {
-			deployArguments[0] = "functions deploy"
+			deployArguments[1] = "functions deploy"
 			buildCmd = fmt.Sprintf("go build %v -o %v%v", customFlags, targetDir, functionName)
 			indexPath = targetDir + "index.js"
 		} else {
